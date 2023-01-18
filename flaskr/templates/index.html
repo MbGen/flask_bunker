@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %} Index {% endblock %}</h1>
+{% endblock %}
+
+
+
+{% block content %}
+<div class="content">
+  <div class="background">
+    <div class="callout large">
+<!-- Modals  -->
+        <div class="reveal" id="CreateLobbyModal" data-reveal>
+          <form data-abide novalidate method="post">
+            <div data-abide-error class="alert callout" style="display: none;">
+              <p><i class="fi-alert"></i> There are some errors in your form.</p>
+            </div>
+            <div class="grid-container">
+              <div class="grid-x grid-margin-x">
+                <div class="cell small-12">
+                  <label>Lobby's Name
+                    <input type="text" name="lobbyname" id="lobbyname"
+                          placeholder="" aria-describedby="example1Hint1" required pattern="alpha_numeric">
+                    <span class="form-error">
+                      Name of lobby is required. 
+                    </span>
+                  </label>
+                </div>
+
+                <div class="cell small-12">
+                  <label> Password
+                    <input type="password" id="lobbypassword" name="lobbypassword" placeholder="password to lobby"
+                          aria-describedby="example1Hint2" required>
+                    <span class="form-error">
+                      Password is required.
+                    </span>
+                  </label>
+                </div>
+                <input type="hidden" name="action" value="create_lobby">
+              </div>
+            </div>
+            <div class="grid-container">
+              <div class="grid-x grid-margin-x">
+                <fieldset class="cell large-6">
+                  <button class="button" type="submit" value="Create">Create</button>
+                </fieldset>
+              </div>
+            </div>
+          </form>
+
+          <button class="close-button" data-close aria-label="Close modal" type="button">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="reveal" id="FindGameModal" data-reveal>
+          <form data-abide novalidate method="post">
+            <div data-abide-error class="alert callout" style="display: none;">
+              <p><i class="fi-alert"></i> There are some errors in your form.</p>
+            </div>
+            <div class="grid-container">
+              <div class="grid-x grid-margin-x">
+                <div class="cell small-12">
+                  <label>Lobby's Name
+                    <input type="text" name="lobbyname" id="lobbyname"
+                          placeholder="" aria-describedby="example1Hint1" required pattern="alpha_numeric">
+                    <span class="form-error">
+                      Name of lobby is required. 
+                    </span>
+                  </label>
+                </div>
+
+                <div class="cell small-12">
+                  <label> Password
+                    <input type="password" id="lobbypassword" name="lobbypassword" placeholder="password to lobby"
+                          aria-describedby="example1Hint2" required>
+                    <span class="form-error">
+                      Password is required.
+                    </span>
+                  </label>
+                </div>
+                <input type="hidden" name="action" value="join_lobby">
+              </div>
+            </div>
+            <div class="grid-container">
+              <div class="grid-x grid-margin-x">
+                <fieldset class="cell large-6">
+                  <button class="button" type="submit" value="Join">Join</button>
+                </fieldset>
+              </div>
+            </div>
+          </form>
+          <button class="close-button" data-close aria-label="Close modal" type="button">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+<!-- End Modals -->
+        {% if g.user %}
+          <h5>Start Play</h5>
+          <p><button class="button expanded" data-open="CreateLobbyModal">Create Lobby</button></p>
+          <p><button class="button expanded" data-open="FindGameModal">Find Game</button></p>
+        {% else %}
+          <h5>You should log in before playing</h5> 
+          <p><a class="button expanded" href="{{ url_for('auth.login') }}">Log in</a></p>
+        {% endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}
