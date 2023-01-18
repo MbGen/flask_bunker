@@ -26,30 +26,5 @@
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
-<script type="text/javascript" charset="utf-8">
-    var socket = io();
-    socket.on('connect', function() {
-        socket.emit('join', {room_id: '{{ lobby_id }}', username: '{{ g.user.username }}', user_id: '{{ g.user.id }}'});
-    });
-    
-    socket.on('json', data => {
-      if ('{{ player.id }}' !== data.userId){
-        showPlayerCard(data)
-      }
-    });
-
-    function showPlayerCard(data) {
-       $('#player_card').append(`<div class="cell">
-          <div class="card" style="width: 300px;">
-            <div class="card-divider">
-              This is card of player
-            </div>
-            <div class="card-section">
-              <h4>Player id - ${data.userId} </h4>
-              <p>Player Name - ${data.username}  </p>
-            </div>
-          </div>
-      </div>`);
-    } 
-</script>
+<script src="{{ url_for('static', filename='js/socket.js') }}"></script>
 {% endblock %}

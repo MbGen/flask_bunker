@@ -43,8 +43,6 @@ def on_join(data):
     username = data['username']
     room = data['room_id']
     user_id = data['user_id'] 
-    if int(user_id) in get_list_of_players_id(room):
-        return
     json = {
         'userId': user_id,
         'username': username,
