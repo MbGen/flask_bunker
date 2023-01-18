@@ -14,7 +14,7 @@
               This is card of player
             </div>
             <div class="card-section">
-              <h4>Player id - {{ player.player_id }}</h4>
+              <h4 id="userId:{{ player.player_id }}">Player id - {{ player.player_id }}</h4>
               <p>Player Name - {{ player.username }}</p>
             </div>
           </div>
@@ -27,13 +27,19 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
 <script type="text/javascript" charset="utf-8">
-    var socket = io();
-    socket.on('connect', function() {
-        socket.emit('join', {room_id: '{{ lobby_id }}', username: '{{ g.user.username }}', user_id: '{{ g.user.id }}'});
+    var io = io();
+    io.on('connect', socket => {
+      const obj = {
+        room_id: '{{ lobby_id }}', 
+        username: '{{ g.user.username }}', 
+        user_id: '{{ g.user.id }}'
+      }
+      io.emit('join', obj);
     });
     
-    socket.on('json', data => {
-      if ('{{ player.id }}' !== data.userId){
+    io.on('json', data => {
+      const isExistUser = !!document.getElementById(`userId:${data.userId}`)
+      if(!isExistUser){
         showPlayerCard(data)
       }
     });
@@ -45,7 +51,7 @@
               This is card of player
             </div>
             <div class="card-section">
-              <h4>Player id - ${data.userId} </h4>
+              <h4 id="userId:${data.userId}">Player id - ${data.userId} </h4>
               <p>Player Name - ${data.username}  </p>
             </div>
           </div>

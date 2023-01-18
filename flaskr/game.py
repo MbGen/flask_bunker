@@ -40,17 +40,20 @@ def get_list_of_players_id(lobby_id: int) -> list:
 
 @socketio.on('join')
 def on_join(data):
+    print("DATA:", data)
+    user_id = data['user_id'] 
     username = data['username']
     room = data['room_id']
-    user_id = data['user_id'] 
-    if int(user_id) in get_list_of_players_id(room):
-        return
     json = {
         'userId': user_id,
         'username': username,
     }
+
+    #if not int(user_id) in get_list_of_players_id(room):
     join_room(room)
-    send(json, json=True, to=room)
+    send(json, json=True, room=room)
+    
+    
     # send(username + " Has join the room", to=room)
 
 @socketio.on('leave')
@@ -59,3 +62,8 @@ def on_leave(data):
     room = data['room_id']
     leave_room(room)
     send(username + " Has left the room", to=room)
+
+
+#@socketio.on('if_i_am_in_lobby')
+#def check_if_i_am_in_lobby(data):
+#    send(int(data['i_am']) in get_list_of_players_id(data['lobby_id']))
