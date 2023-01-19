@@ -10,7 +10,7 @@ CREATE TABLE user (
 );
 
 CREATE TABLE room (
-    id INTEGER UNIQUE PRIMARY KEY,
+    id INTEGER UNIQUE NOT NULL,
     name TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
     creator INTEGER NOT NULL,

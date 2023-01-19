@@ -2,11 +2,13 @@ from flask import Blueprint, request, render_template, flash, redirect, url_for,
 from flask_socketio import join_room, leave_room, send, emit
 
 from flaskr.db import get_db
+from .auth import login_required
 from . import socketio
 
 bp = Blueprint('game', __name__, url_prefix='/game')
 
 @bp.route('/lobby/<int:lobby_id>', methods=('GET', 'POST'))
+@login_required
 def lobby(lobby_id: int):
     db = get_db()
     error = None
@@ -15,8 +17,8 @@ def lobby(lobby_id: int):
         flash(error)
         return redirect(url_for('index.index'))
 
-    if not session.get('user_id') in get_list_of_players_id(lobby_id):
-        error = "You are not registered in this lobby" 
+    if request.referrer is None:
+        error = "You are not registered in this lobby"
         flash(error)
         return redirect(url_for('index.index'))
 
@@ -26,7 +28,6 @@ def lobby(lobby_id: int):
     WHERE g.id = ?""", (lobby_id, )).fetchall()
 
     return render_template("game/lobby.html", lobby_id=lobby_id, players=players, player=g.user)
-
 
 def is_exists_lobby(lobby_id: int) -> bool:
     db = get_db()
@@ -38,32 +39,29 @@ def get_list_of_players_id(lobby_id: int) -> list:
     rows = db.execute("SELECT player_id FROM game WHERE id=?", (lobby_id, )).fetchall()
     return [row['player_id'] for row in rows]
 
+
 @socketio.on('join')
 def on_join(data):
-    print("DATA:", data)
+    db = get_db()
     user_id = data['user_id'] 
     username = data['username']
     room = data['room_id']
+
     json = {
         'userId': user_id,
         'username': username,
     }
 
-    #if not int(user_id) in get_list_of_players_id(room):
-    join_room(room)
-    send(json, json=True, room=room)
-    
-    
-    # send(username + " Has join the room", to=room)
+    if int(user_id) not in get_list_of_players_id(room):
+        with db:
+            db.execute("INSERT INTO game (id, player_id) VALUES (?, ?)", (room, user_id))
+        join_room(room)
+        send(json, json=True, room=room)
+
 
 @socketio.on('leave')
 def on_leave(data):
     username = data['username']
     room = data['room_id']
     leave_room(room)
-    send(username + " Has left the room", to=room)
-
-
-#@socketio.on('if_i_am_in_lobby')
-#def check_if_i_am_in_lobby(data):
-#    send(int(data['i_am']) in get_list_of_players_id(data['lobby_id']))
+    send(username + " Has left the room", room=room)
