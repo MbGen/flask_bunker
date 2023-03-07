@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% from 'components/PlayerCard.html' import newPlayerCard %}
+
+{% block header %}
+  <h1>{% block title %}Lobby{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="grid-container">
+  <div class="grid-x grid-margin-x grid-padding-y small-up-2 medium-up-3" id="player_card">
+    {% for player in players %}
+      {{ newPlayerCard(player.id, player.username) }}
+    {% endfor %} 
+  </div>
+</div>
+<h1>LOBBY ID = {{ lobby_id }}</h1>
+
+<a class="button expanded" type="submit" value="Leave" href="/" onclick="leave()">Leave</a>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+<script type="text/javascript" charset="utf-8">
+    var io = io();
+    const player_info = {
+        room_id: '{{ lobby_id }}', 
+        username: '{{ g.user.username }}', 
+        user_id: '{{ g.user.id }}',
+    };
+
+    io.on('connect', socket => {
+      io.emit('join', player_info);
+    });
+    
+    io.on('json', data => {
+      if (data.method === 'join')
+        showPlayerCard(data);
+      else if (data.method === 'leave')
+        removePlayerCard(data.userId)
+    });
+
+    function leave() {
+      io.emit('leave', player_info);
+    }
+
+    function showPlayerCard(data) {
+      console.log(data);
+       $('#player_card').append(`<div class="cell" id="${data.userId}">
+          <div class="card" style="width: 300px;">
+            <div class="card-divider">
+              This is card of player
+            </div>
+            <div class="card-section">
+              <h4>Player id - ${data.userId} </h4>
+              <p>Player Name - ${data.username} </p>
+            </div>
+          </div>
+       </div>`);
+    }
+
+    function removePlayerCard(user_id) {
+      try {
+        $(`#${user_id}`).remove();
+      } catch (error) {
+        console.log("LOBBY HTML ERROR =" + error);
+      }
+    }
+</script>
+{% endblock %}

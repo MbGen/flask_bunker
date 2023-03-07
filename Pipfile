@@ -7,6 +7,8 @@ name = "pypi"
 flask = "*"
 gevent-websocket = "*"
 flask-socketio = "*"
+pytest = "*"
+coverage = "*"
 
 [dev-packages]
 

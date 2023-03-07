@@ -47,21 +47,33 @@ def on_join(data):
     username = data['username']
     room = data['room_id']
 
-    json = {
+    user_data = {
         'userId': user_id,
         'username': username,
+        'method': 'join'
     }
 
     if int(user_id) not in get_list_of_players_id(room):
         with db:
             db.execute("INSERT INTO game (id, player_id) VALUES (?, ?)", (room, user_id))
         join_room(room)
-        send(json, json=True, room=room)
+        send(user_data, json=True, room=room)
 
 
 @socketio.on('leave')
 def on_leave(data):
+    db = get_db()
+    user_id = data['user_id']
     username = data['username']
     room = data['room_id']
-    leave_room(room)
-    send(username + " Has left the room", room=room)
+
+    player_info = {
+        'userId': user_id,
+        'username': username,
+        'method': 'leave'
+    }
+
+    with db:
+        db.execute("DELETE FROM game WHERE player_id=?", (user_id, ))
+        send(player_info, json=True, room=room)
+        leave_room(room)
