@@ -1,13 +1,11 @@
 import os
 
-
 from flask import Flask
 from flask_socketio import SocketIO
 
 socketio = SocketIO(logger=True, engineio_logger=True)
 
 def create_app(test_config=None, debug=False):
-    # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.debug = debug
     app.config.from_mapping(
@@ -27,14 +25,23 @@ def create_app(test_config=None, debug=False):
         os.makedirs(app.instance_path)
     except OSError:
         pass
+    
+    with app.app_context():
+        from . import db
+        from . import auth
+        from . import index
+        from . import game
 
-    from . import db
-    from . import auth
-    from . import index
-    from . import game
-    db.init_app(app)
-    app.register_blueprint(auth.bp)
-    app.register_blueprint(index.bp)
-    app.register_blueprint(game.bp)
-    socketio.init_app(app)
+        from . import middleware
+
+        db.init_app(app)
+
+        app.register_blueprint(auth.bp)
+        app.register_blueprint(index.bp)
+        app.register_blueprint(game.bp)
+
+        app.after_request(middleware.add_location_header)
+
+        socketio.init_app(app)
+
     return app

@@ -9,6 +9,7 @@ gevent-websocket = "*"
 flask-socketio = "*"
 pytest = "*"
 coverage = "*"
+peewee = "*"
 
 [dev-packages]
 

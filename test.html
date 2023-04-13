@@ -1,12 +1,38 @@
-{% extends 'base.html' %}
+<!doctype html>
 
-{% block header %}
-  <h1>{% block title %} Index {% endblock %}</h1>
-{% endblock %}
+<head>
+  <title> Index  - Flaskr</title>
+  <link rel="stylesheet" href="/static/css/foundation.css"> <!--TODO: Замiниит на foundation.min.css при деплой-->
+  <link rel="stylesheet" href="/static/css/app.css">
+
+</head>
+
+<div class="contain-to-grid sunset_background">
+ <div class="top-bar transparent">
+  <div class="top-bar-left">
+    <ul class="dropdown menu" data-dropdown-menu>
+      <li class="menu-text"><a href="/" style="color: inherit">Bunker</a></li>
+    </ul>
+  </div>
+  <div class="top-bar-right">
+    <ul class="menu alight-right">
+      
+        <li><a href="#">test</a></li>
+        <li><a href="/auth/logout">Log Out</a></li>
+      
+    </ul>
+      </div>
+   </div>
+</div>
+<!-- Error messages, called by flash('message') in code -->
+
+<div class="callout alert">
+  <h5>Alert</h5>
+  <p class="flash">You are not registered in this lobby</p>
+</div>
 
 
 
-{% block content %}
 
 <div class="index_content ">
   <div class="background">
@@ -101,17 +127,20 @@
         </div>
 
 <!-- End Modals -->
-        {% if g.user %}
+        
           <h5>Start Play</h5>
           <p><button class="button expanded" data-open="CreateLobbyModal">Create Lobby</button></p>
           <p><button class="button expanded" data-open="FindGameModal">Find Game</button></p>
-        {% else %}
-          <h5>You should log in before playing</h5> 
-          <p><a class="button" href="{{ url_for('auth.login') }}">Log in</a></p>
-        {% endif %}
+        
         </div>
       </div>
     </div>
   </div>
 </div>
-{% endblock %}
+
+
+
+<script src="/static/js/vendor/jquery.js"></script>
+<script src="/static/js/vendor/what-input.js"></script>
+<script src="/static/js/vendor/foundation.js"></script>
+<script src="/static/js/app.js"></script>

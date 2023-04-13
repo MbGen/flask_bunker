@@ -7,8 +7,8 @@
 
 </head>
 
-<div class="contain-to-grid">
- <div class="top-bar">
+<div class="contain-to-grid sunset_background">
+ <div class="top-bar transparent">
   <div class="top-bar-left">
     <ul class="dropdown menu" data-dropdown-menu>
       <li class="menu-text"><a href="{{ url_for('index.index') }}" style="color: inherit">Bunker</a></li>
@@ -27,8 +27,7 @@
       </div>
    </div>
 </div>
-
-
+<!-- Error messages, called by flash('message') in code -->
 {% for message in get_flashed_messages() %}
 <div class="callout alert">
   <h5>Alert</h5>
